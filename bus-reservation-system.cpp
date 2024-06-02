@@ -10,6 +10,7 @@ int arr[40];
 struct bus_data
 {
     int bus_id;
+    int seats = 20;
     string bus_driver;
     string start;
     string end;
@@ -25,16 +26,11 @@ int Add_bus()
     cin >> entry.start;
     cout << "Please enter the station where the bus journey will end" << endl;
     cin >> entry.end;
-    file.open("seats.txt",ios::app);
-    file<<entry.bus_id<<"*";
-    for(int j = 0 ; j < 40 ; j++)
-    {
-        arr[j] = j+1;
-        file<<arr[j]<<"*";
-    }
-    file.close();
     file.open("bus data.txt", ios::app);
     file << entry.bus_id << "*" << entry.bus_driver << "*" << entry.start << "*" << entry.end << endl;
+    file.close();
+    file.open("seats.txt", ios::app);
+    file << entry.seats << endl;
     file.close();
     return 0;
 }
@@ -42,11 +38,8 @@ int Check_buses()
 {
     file.open("bus data.txt", ios::in);
     string info;
-    cout << "\033[4mBus ID\t\tDriver's Name\t\tStarting point\t\tEnding point\033[0m" << endl
+    cout << "\033[4mBus ID\t\tDriver's Name\t\tStarting point\t\tEnding point\t\tAvaialble seats\033[0m" << endl
          << endl;
-    ;
-    // string array[] = {"S.no","dirver name","starting point" , "end"};
-    // printf("%4s,")]
 
     while (getline(file, info))
     {
@@ -75,7 +68,7 @@ int reservation()
     int x = 0;
     while (getline(file, info))
     {
-        cout<< x+1<<". ";
+        cout << x + 1 << ". ";
         for (int i = 0; i < info.size(); i++)
         {
             if (info[i] == '*')
@@ -84,23 +77,48 @@ int reservation()
             }
             cout << info[i];
         }
-        cout<<endl;
+        cout << endl;
         x++;
         // cout<<endl<<endl;
     }
-    cout<<"Please select the bus you wanto ride"<<endl;
+    file.close();
+    cout << "Please select the bus you wanto ride through S.NO(1,2,3,.....)" << endl;
     int bus_no;
-    cin>>bus_no;
-    file.open("seats.txt",ios::in);
-    string data;
-    while(getline(file,data))
+    cin >> bus_no;
+    int count = 1;
+    file.open("seats.txt", ios::out | ios::in);
+    // while(getline(file,info))
+    // {
+    //     if(count == bus_no)
+    //     {
+    //         int av_seats;
+    //         av_seats = stoi(info);
+    //         av_seats -= 1;
+    //         file<<av_seats<<endl;
+    //     }
+
+    // }
+    size_t pos;
+    while (getline(file, info))
     {
-        for( int i = 0 ; i < data.size(); i++)
+        // pos = info.find('*');
+        if (count == bus_no)
         {
-            
+            file.seekp(file.tellg() - info.length() - 2);
+
+            int av_seats;
+            av_seats = stoi(info);
+            av_seats -= 1;
+            file << av_seats << endl;
+            file.close();
+            return 0;
+        }
+        else
+        {
+            count++;
         }
     }
-    
+    file.close();
     getch();
     return 0;
 }
