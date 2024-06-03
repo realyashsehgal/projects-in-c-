@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include <iomanip>
+#include<vector>
 using namespace std;
 #define underline "\033[4m\033"
 fstream file;
@@ -64,64 +65,79 @@ int Check_buses()
 int reservation()
 {
     file.open("bus data.txt", ios::in);
+    if (!file.is_open())
+    {
+        cout << "Unable to open bus data file." << endl;
+        return 1;
+    }
+
     string info;
-    int x = 0;
+    int bus_count = 0;
     while (getline(file, info))
     {
-        cout << x + 1 << ". ";
-        for (int i = 0; i < info.size(); i++)
+        cout << bus_count + 1 << ". ";
+        for (char c : info)
         {
-            if (info[i] == '*')
-            {
-                break;
-            }
-            cout << info[i];
+            if (c == '*') break;
+            cout << c;
         }
         cout << endl;
-        x++;
-        // cout<<endl<<endl;
+        bus_count++;
     }
     file.close();
-    cout << "Please select the bus you wanto ride through S.NO(1,2,3,.....)" << endl;
+
+    cout << "Please select the bus you want to ride by S.NO (1,2,3,...)" << endl;
     int bus_no;
     cin >> bus_no;
-    int count = 1;
-    file.open("seats.txt", ios::out | ios::in);
-    // while(getline(file,info))
-    // {
-    //     if(count == bus_no)
-    //     {
-    //         int av_seats;
-    //         av_seats = stoi(info);
-    //         av_seats -= 1;
-    //         file<<av_seats<<endl;
-    //     }
+    bus_no -= 1;
 
-    // }
-    size_t pos;
-    while (getline(file, info))
+    if (bus_no < 0 || bus_no >= bus_count)
     {
-        // pos = info.find('*');
-        if (count == bus_no)
-        {
-            file.seekp(file.tellg() - info.length() - 2);
-
-            int av_seats;
-            av_seats = stoi(info);
-            av_seats -= 1;
-            file << av_seats << endl;
-            file.close();
-            return 0;
-        }
-        else
-        {
-            count++;
-        }
+        cout << "Invalid bus number." << endl;
+        return 0;
     }
-    file.close();
-    getch();
+    fstream seats_file("seats.txt", ios::in);
+    if (!seats_file.is_open())
+    {
+        cout << "Unable to open seats file." << endl;
+        return 1;
+    }
+
+    vector<int> seats;
+    string line;
+    while (getline(seats_file, line))
+    {
+        seats.push_back(stoi(line));
+    }
+    seats_file.close();
+
+    if (bus_no < seats.size() && seats[bus_no] > 0)
+    {
+        seats[bus_no] -= 1;
+        cout << "Reservation successful. Seats remaining: " << seats[bus_no] << endl;
+    }
+    else
+    {
+        cout << "No available seats or invalid bus selection." << endl;
+        return 0;
+    }
+    seats_file.open("seats.txt", ios::out | ios::trunc);
+    if (!seats_file.is_open())
+    {
+        cout << "Unable to open seats file for writing." << endl;
+        return 1;
+    }
+
+    for (int seat : seats)
+    {
+        seats_file << seat << endl;
+    }
+
+    seats_file.close();
     return 0;
 }
+
+
 int main()
 {
     int choice;
