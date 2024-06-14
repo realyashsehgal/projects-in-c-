@@ -62,7 +62,6 @@ int byess(int total_teams)
     {
         groupb.push_back(teams[i]);
     }
-    getch();
     int rear;
     if (byer % 2 == 0)
     {
@@ -87,12 +86,35 @@ int byess(int total_teams)
             front += 1;
         }
     }
-
+    else
+    {
+        byes.push_back(groupa[0]);
+        int rear = groupa.size() - 1;
+        int target = byer / 2; 
+        while (byer > target+1  && rear >= 0)
+        {
+            byes.push_back(groupa[rear]);
+            rear -= 1;
+            byer -= 1;
+        }
+        byer = power - total_teams;
+        target = byer / 2;
+        rear = groupb.size() - 1;
+        int front = 0;
+        byes.push_back(groupb[rear]);
+        while (byer > target+2 && front < groupb.size())
+        {
+            byes.push_back(groupb[front]);
+            byer -= 1;
+            front += 1;
+        }
+    }
     cout << "byes of groups " << endl;
     for (int i = 0; i < byes.size(); i++)
     {
         cout << byes[i] << endl;
     }
+    getch();
     return 0;
 }
 int match_making(int total_teams)
