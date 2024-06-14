@@ -9,8 +9,9 @@ using namespace std;
 vector<int> teams;
 vector<int> wteams;
 vector<int> byes;
-int display(int total_teams);
+int display();
 int byess(int total_teams);
+int match_making(int total_teams);
 int main()
 {
     int total_teams;
@@ -21,18 +22,18 @@ int main()
     {
         teams.push_back(i);
     }
-    display(total_teams);
+    display();
     system("cls");
     cout << "giving byes to the teams" << endl;
     byess(total_teams);
     system("cls");
-    display(total_teams);
+    // match_making(total_teams);
     getch();
     return 0;
 }
-int display(int total_teams)
+int display()
 {
-    for (int i = 0; i < total_teams; i++)
+    for (int i = 0; i < teams.size(); i++)
     {
         cout << teams[i] << endl;
     }
@@ -42,6 +43,8 @@ int display(int total_teams)
 }
 int byess(int total_teams)
 {
+    vector<int> groupa;
+    vector<int> groupb;
     vector<int> temp;
     temp = teams;
     int power = 1;
@@ -50,47 +53,64 @@ int byess(int total_teams)
     {
         power *= 2;
     }
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    default_random_engine e(seed);
-    // cout<<"byes given will be "<< power - total_teams<<endl;
-    // cout<<"click to exit"<<endl;
     byer = power - total_teams;
-    shuffle(temp.begin(), temp.end(), e);
-    for (int i = 0; i < byer; i++)
+    for (int i = 0; i < teams.size() / 2; i++)
     {
-        byes.push_back(temp[i]);
+        groupa.push_back(teams[i]);
     }
-    sort(byes.begin(), byes.end());
-    cout << "displaying the byes" << endl;
-    for (int i = 0; i < byer; i++)
+    for (int i = teams.size() / 2; i < teams.size(); i++)
+    {
+        groupb.push_back(teams[i]);
+    }
+    getch();
+    int rear;
+    if (byer % 2 == 0)
+    {
+        byes.push_back(groupa[0]);
+        int rear = groupa.size() - 1;
+        int target = byer / 2; 
+        while (byer > target +1 && rear >= 0)
+        {
+            byes.push_back(groupa[rear]);
+            rear -= 1;
+            byer -= 1;
+        }
+        byer = power - total_teams;
+        target = byer / 2;
+        rear = groupb.size() - 1;
+        int front = 0;
+        byes.push_back(groupb[rear]);
+        while (byer > target+1 && front < groupb.size())
+        {
+            byes.push_back(groupb[front]);
+            byer -= 1;
+            front += 1;
+        }
+    }
+
+    cout << "byes of groups " << endl;
+    for (int i = 0; i < byes.size(); i++)
     {
         cout << byes[i] << endl;
     }
-    temp.clear();
-    int flag;
-    cout << "now new team without byes are" << endl;
-    cout<<total_teams-byer<<endl;
-    for (int i = 0; i < (total_teams - byer); i++)
+    return 0;
+}
+int match_making(int total_teams)
+{
+    int itr = 0;
+    cout << "Secondly now the non byes teams will compete" << endl;
+    while (itr < teams.size())
     {
-        for (int j = 0; j < byer; j++)
-        {
-
-            if (teams[i] == byes[j])
-            {
-                flag = 1;
-            }
-            else
-            {
-                continue;
-            }
-        }
-        if (flag != 1)
-        {
-            temp.push_back(teams[i]);
-        }
-        flag = 0;
+        cout << teams[itr] << " VS " << teams[itr + 1] << endl;
+        itr += 2;
     }
-    teams = temp;
+    itr = 0;
+    cout << "Firstly match will be held between the teams which were given byes" << endl;
+    while (itr < byes.size())
+    {
+        cout << byes[itr] << " VS " << byes[itr + 1] << endl;
+        itr += 2;
+    }
     getch();
     return 0;
 }
