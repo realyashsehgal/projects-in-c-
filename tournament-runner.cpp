@@ -2,9 +2,12 @@
 #include <conio.h>
 #include <vector>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 vector<int> teams;
-vector<int> wteams;
+vector<int> wteamsa;
+vector<int> wteamsb;
 vector<int> byes;
 vector<int> groupa;
 vector<int> groupb;
@@ -27,7 +30,6 @@ int main()
     byess(total_teams);
     system("cls");
     match_making(total_teams);
-    getch();
     return 0;
 }
 int display()
@@ -61,7 +63,7 @@ int byess(int total_teams)
     {
         return 0;
     }
-    if(byer == 1)
+    if (byer == 1)
     {
         byes.push_back(groupa[0]);
         return 0;
@@ -123,37 +125,274 @@ int byess(int total_teams)
 }
 int match_making(int total_teams)
 {
+    vector<int> nonbye_a;
+    vector<int> nonbye_b;
+    vector<int> bye_a;
+    vector<int> bye_b;
+    srand(time(0));
     int rounds = 1;
     int total_byes = byes.size();
     int groupa_byes = total_byes - total_byes / 2;
     int groupb_byes = total_byes - groupa_byes;
-    wteams = teams;
-    if (byes.size() != 0)
+    wteamsa = groupa;
+    wteamsb = groupb;
+    while (groupa.size() > 1 && groupb.size() > 1)
     {
-        // while(wteams.size() > 1)
-        // {
-        cout << "The macthes which are going to take place in round " << rounds << " are as given group wise" << endl;
-        cout << "The competing teams from goup A are as follows" << endl;
-        for (int i = 1; i < groupa.size() - (groupa_byes -1) ; i += 2)
+        system("cls");
+        int debug = 0; 
+        cout << "Rounds " << rounds << endl;
+        bye_a.clear();
+        bye_b.clear();
+        wteamsb.clear();
+        wteamsa.clear();
+        getch();
+        if (rounds == 1)
         {
-            cout << groupa[i] << " VS " << groupa[i + 1] << endl;
-        }
-        cout << "The competing teams from goup B are as follows" << endl;
-        if(groupb_byes == 0 )
-        {
-        for (int i = 0; i < groupb.size() ; i += 2)
-        {
-            cout << groupb[i] << " VS " << groupb[i + 1] << endl;
-        }
-        }
-        for (int i = groupb_byes - 1; i < groupb.size() - 1; i += 2)
-        {
-            cout << groupb[i] << " VS " << groupb[i + 1] << endl;
-        }
+            system("cls");
+            cout << "The macthes which are going to take place in round " << rounds << " are as given group wise\n"
+                 << endl;
+            cout << "The competing teams from goup A are as follows" << endl;
+            if (groupa_byes == 0)
+            {
+                for (int i = 0; i < groupa.size(); i += 2)
+                {
+                    cout << groupa[i] << " VS " << groupa[i + 1] << endl;
+                    nonbye_a.push_back(groupa[i]);
+                    nonbye_a.push_back(groupa[i + 1]);
+                    int win = rand() % 2;
+                    if (win == 0)
+                    {
+                        wteamsa.push_back(groupa[i]);
+                    }
+                    else
+                    {
+                        wteamsa.push_back(groupa[i + 1]);
+                    }
+                }
+            }
+            else
+            {
 
-        //     rounds --;
-        // }
+                for (int i = 1; i < groupa.size() - (groupa_byes - 1); i += 2)
+                {
+                    cout << groupa[i] << " VS " << groupa[i + 1] << endl;
+                    nonbye_a.push_back(groupa[i]);
+                    nonbye_a.push_back(groupa[i + 1]);
+                    int win;
+                    if (win == 0)
+                    {
+                        wteamsa.push_back(groupa[i]);
+                    }
+                    else
+                    {
+                        wteamsa.push_back(groupa[i + 1]);
+                    }
+                    debug = 1;
+                }
+                if (debug == 0)
+                {
+                    wteamsa = groupa;
+                }
+            }
+            cout << "The competing teams from goup B are as follows" << endl;
+            if (groupb_byes == 0)
+            {
+                for (int i = 0; i < groupb.size(); i += 2)
+                {
+                    cout << groupb[i] << " VS " << groupb[i + 1] << endl;
+                    nonbye_b.push_back(groupb[i]);
+                    nonbye_b.push_back(groupb[i + 1]);
+                    int win = rand() % 2;
+                    if (win == 0)
+                    {
+                        wteamsb.push_back(groupb[i]);
+                    }
+                    else
+                    {
+                        wteamsb.push_back(groupb[i + 1]);
+                    }
+                }
+            }
+            else
+            {
+
+                for (int i = groupb_byes - 1; i < groupb.size() - 1; i += 2)
+                {
+                    cout << groupb[i] << " VS " << groupb[i + 1] << endl;
+                    nonbye_b.push_back(groupb[i]);
+                    nonbye_b.push_back(groupb[i + 1]);
+                    int win = rand() % 2;
+                    if (win == 0)
+                    {
+                        wteamsb.push_back(groupb[i]);
+                    }
+                    else
+                    {
+                        wteamsb.push_back(groupb[i + 1]);
+                    }
+                }
+            }
+            // finding byes in group A
+            int flag;
+            for (int i = 0; i < groupa.size(); i++)
+            {
+                for (int j = 0; j < nonbye_a.size(); j++)
+                {
+
+                    if (groupa[i] == nonbye_a[j])
+                    {
+                        flag = 1;
+                        break;
+                    }
+                    else
+                    {
+                        flag = 0;
+                    }
+                }
+                if (flag == 0)
+                {
+                    bye_a.push_back(groupa[i]);
+                }
+            }
+            // finding byes in group A
+            for (int i = 0; i < groupb.size(); i++)
+            {
+                for (int j = 0; j < nonbye_b.size(); j++)
+                {
+
+                    if (groupb[i] == nonbye_b[j])
+                    {
+                        flag = 1;
+                        break;
+                    }
+                    else
+                    {
+                        flag = 0;
+                    }
+                }
+                if (flag == 0)
+                {
+                    bye_b.push_back(groupb[i]);
+                }
+            }
+
+            // // TEAM A WINNER DISTRIBUTION
+            if (debug == 1)
+            {
+
+                groupa.clear();
+                groupa = wteamsa;
+                groupa.insert(groupa.end(), bye_a.begin(), bye_a.end());
+                sort(groupa.begin(), groupa.end());
+            }
+            // // TEAM B WINNER DISTRIBUTION
+            groupb.clear();
+            groupb = wteamsb;
+            groupb.insert(groupb.end(), bye_b.begin(), bye_b.end());
+            sort(groupb.begin(), groupb.end());
+        }
+        else
+        {
+            system("cls");
+            cout << "the teams competing for this round from group A are :" << endl;
+            for (int i = 0; i < groupa.size(); i += 2)
+            {
+                cout << groupa[i] << " VS " << groupa[i + 1] << endl;
+                nonbye_a.push_back(groupa[i]);
+                nonbye_a.push_back(groupa[i + 1]);
+                int win = rand() % 2;
+                if (win == 0)
+                {
+                    wteamsa.push_back(groupa[i]);
+                }
+                else
+                {
+                    wteamsa.push_back(groupa[i + 1]);
+                }
+            }
+            cout << "the teams competing for this round from group B are :" << endl;
+            for (int i = 0; i < groupb.size(); i += 2)
+            {
+                cout << groupb[i] << " VS " << groupb[i + 1] << endl;
+                nonbye_b.push_back(groupb[i]);
+                nonbye_b.push_back(groupb[i + 1]);
+                int win = rand() % 2;
+                if (win == 0)
+                {
+                    wteamsb.push_back(groupb[i]);
+                }
+                else
+                {
+                    wteamsb.push_back(groupb[i + 1]);
+                }
+            }
+            // finding byes in group A
+            int flag;
+            for (int i = 0; i < groupa.size(); i++)
+            {
+                for (int j = 0; j < nonbye_a.size(); j++)
+                {
+
+                    if (groupa[i] == nonbye_a[j])
+                    {
+                        flag = 1;
+                        break;
+                    }
+                    else
+                    {
+                        flag = 0;
+                    }
+                }
+                if (flag == 0)
+                {
+                    bye_a.push_back(groupa[i]);
+                }
+            }
+            // finding byes in group A
+            for (int i = 0; i < groupb.size(); i++)
+            {
+                for (int j = 0; j < nonbye_b.size(); j++)
+                {
+
+                    if (groupb[i] == nonbye_b[j])
+                    {
+                        flag = 1;
+                        break;
+                    }
+                    else
+                    {
+                        flag = 0;
+                    }
+                }
+                if (flag == 0)
+                {
+                    bye_b.push_back(groupb[i]);
+                }
+            }
+
+            // // TEAM A WINNER DISTRIBUTION
+            groupa.clear();
+            groupa = wteamsa;
+            groupa.insert(groupa.end(), bye_a.begin(), bye_a.end());
+            sort(groupa.begin(), groupa.end());
+            // // TEAM B WINNER DISTRIBUTION
+            groupb.clear();
+            groupb = wteamsb;
+            groupb.insert(groupb.end(), bye_b.begin(), bye_b.end());
+            sort(groupb.begin(), groupb.end());
+        }
+        getch();
+        system("cls");
+        cout << "group a" << endl;
+        for (int i = 0; i < groupa.size(); i++)
+        {
+            cout << groupa[i] << endl;
+        }
+        getch();
+        rounds++;
     }
+
+    cout << "Click any key to exit" << endl;
     getch();
     return 0;
 }
