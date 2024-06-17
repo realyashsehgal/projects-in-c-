@@ -30,6 +30,18 @@ int main()
     byess(total_teams);
     system("cls");
     match_making(total_teams);
+    system("cls");
+    int win = rand() % 2;
+    if(win == 0)
+    {
+        cout<<"The winner of this tournament is "<<groupa[0]<<endl;
+    }
+    else
+    {
+        cout<<"The winner of this tournament is "<<groupb[0]<<endl;
+    }
+    cout<<"Click any key to exit"<<endl;
+    getch();
     return 0;
 }
 int display()
@@ -38,7 +50,7 @@ int display()
     {
         cout << teams[i] << endl;
     }
-    cout << "click to clear and exit" << endl;
+    cout << "click to clear and move to matchmaking" << endl;
     getch();
     return 0;
 }
@@ -115,12 +127,6 @@ int byess(int total_teams)
         }
     }
     sort(byes.begin(), byes.end());
-    cout << "byes of groups " << endl;
-    for (int i = 0; i < byes.size(); i++)
-    {
-        cout << byes[i] << endl;
-    }
-    getch();
     return 0;
 }
 int match_making(int total_teams)
@@ -139,7 +145,7 @@ int match_making(int total_teams)
     while (groupa.size() > 1 && groupb.size() > 1)
     {
         system("cls");
-        int debug = 0; 
+        int debug = 0;
         cout << "Rounds " << rounds << endl;
         bye_a.clear();
         bye_b.clear();
@@ -382,17 +388,7 @@ int match_making(int total_teams)
             sort(groupb.begin(), groupb.end());
         }
         getch();
-        system("cls");
-        cout << "group a" << endl;
-        for (int i = 0; i < groupa.size(); i++)
-        {
-            cout << groupa[i] << endl;
-        }
-        getch();
         rounds++;
     }
-
-    cout << "Click any key to exit" << endl;
-    getch();
     return 0;
 }
